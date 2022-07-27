@@ -41,26 +41,27 @@
               strokeWidth: 1,
               draggable: true,
               listening:
-                !addMode || (!addMode && idx !== activeAnchorsGroup.length - 1),
+                !addMode || (addMode && idx !== activeAnchorsGroup.length - 1),
             }"
             @dragmove="handleAnchorDrag($event, anchor, idx)"
             @click="handleAnchorClick"
           />
-          <v-circle
-            v-if="!addMode"
-            v-for="(anchor, idx) in midAnchors"
-            :key="`midAnchor-${idx}`"
-            :config="{
-              x: anchor.x,
-              y: anchor.y,
-              radius: 4,
-              stroke: '#666',
-              fill: '#ddd',
-              strokeWidth: 1,
-              draggable: false,
-            }"
-            @mousedown="handleMiddleDragStart($event, anchor)"
-          />
+          <template v-if="!addMode">
+            <v-circle
+              v-for="(anchor, idx) in midAnchors"
+              :key="`midAnchor-${idx}`"
+              :config="{
+                x: anchor.x,
+                y: anchor.y,
+                radius: 4,
+                stroke: '#666',
+                fill: '#ddd',
+                strokeWidth: 1,
+                draggable: false,
+              }"
+              @mousedown="handleMiddleDragStart($event, anchor)"
+            />
+          </template>
         </v-layer>
       </v-stage>
     </div>
@@ -151,7 +152,7 @@ export default {
       // updateAnchor(activeAnchorsGroup.value[activeAnchorsGroup.value.length - 1], pos)
     };
     const handleStageClick = (e) => {
-      if (!addMode.value) return;
+      if (!addMode.value || e.target.tagName === "CANVAS") return;
       if (e.target instanceof Konva.Line || e.target instanceof Konva.Circle)
         return;
       // console.log(e.target.getRelativePointerPosition())
@@ -161,6 +162,7 @@ export default {
     const handleAnchorClick = (e) => {
       if (!addMode.value) return;
       addMode.value = false;
+      activeAnchorsGroup.value.pop();
     };
 
     const lines = computed(() => {
@@ -226,6 +228,7 @@ export default {
       handleStageClick,
       handleStageMouseMove,
       handleAnchorAdd,
+      handleAnchorClick,
     };
   },
 };
