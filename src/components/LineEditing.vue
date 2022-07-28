@@ -76,12 +76,12 @@ const handleLineAdd = async () => {
   anchors.value.push({ x: 0, y: 0 });
 };
 const handleStageMouseMove = (e) => {
-  if (!addMode.value) return;
+  if (!addMode.value || !e.evt) return;
   const pos = e.target.getStage().getRelativePointerPosition();
   anchors.value[anchors.value.length - 1] = pos;
 };
 const handleStageClick = (e) => {
-  if (!addMode.value) {
+  if (!addMode.value || !e.evt) {
     if (e.target instanceof Konva.Stage) completeEdit();
     return;
   }
