@@ -1,11 +1,11 @@
 <template>
   <div style="display: flex; flex-direction: column; gap: 10px">
-    <button type="button" @click="handleAnchorAdd">Add Line</button>
+    <button type="button" @click="handleAnchorAdd">Start to draw a line</button>
     <div style="display: flex; background: aliceblue">
       <v-stage
         ref="stage"
         :config="{
-          width: 800,
+          width: 1000,
           height: 700,
         }"
         @click="handleStageClick"
