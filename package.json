@@ -11,6 +11,7 @@
   "dependencies": {
     "konva": "^8.3.10",
     "prettier": "^2.7.1",
+    "tdesign-vue-next": "^0.18.1",
     "vue": "^3.2.37",
     "vue-konva": "^3.0.0"
   },

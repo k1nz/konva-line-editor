@@ -1,8 +1,14 @@
 <template>
-  <div style="display: flex; flex-direction: column; gap: 10px">
-    <button type="button" @click="handleAnchorAdd">Start to draw a line</button>
-    <div style="display: flex; background: aliceblue">
+  <div class="main">
+    <div class="editor-area">
+      <button type="button" @click="handleAnchorAdd">
+        Start to draw a line
+      </button>
+      <div id="editor"></div>
+    </div>
+    <div class="stage">
       <v-stage
+        v-if="mounted"
         ref="stage"
         :config="{
           width: 1000,
@@ -18,8 +24,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import LineLayer from "./components/LineLayer.vue";
+
+const mounted = ref(false);
+onMounted(() => {
+  mounted.value = true;
+});
 
 const lineLayer = ref(null);
 const handleAnchorAdd = async () => {
@@ -37,5 +48,20 @@ const handleStageMouseMove = (e) => {
 body {
   margin: 0;
   padding: 0;
+}
+.main {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+.editor-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.stage {
+  display: flex;
+  background: aliceblue;
+  border-radius: 4px;
 }
 </style>
