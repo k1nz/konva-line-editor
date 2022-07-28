@@ -176,7 +176,11 @@ const handleDragend = (e) => {
   </v-layer>
   <Teleport to="#editor">
     <t-card title="Line Color" :subtitle="`${lineConfig.line_color}`">
-      <t-color-picker-panel v-model="lineConfig.line_color" format="HEX" />
+      <t-color-picker-panel
+        v-model="lineConfig.line_color"
+        format="HEX"
+        :color-modes="['monochrome']"
+      />
     </t-card>
     <t-card title="Line Width" :subtitle="`${lineConfig.line_width}`">
       <t-slider v-model="lineConfig.line_width" :min="1" :max="10" />
