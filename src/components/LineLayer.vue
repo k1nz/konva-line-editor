@@ -65,6 +65,7 @@ const handleDragend = (e) => {
         strokeWidth: line.line_width,
         lineCap: 'round',
         lineJoin: 'round',
+        hitStrokeWidth: line.line_width < 8 ? 8 : line.line_width,
       }"
       @click="handleLineClick($event, index)"
     />

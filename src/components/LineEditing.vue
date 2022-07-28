@@ -138,6 +138,7 @@ const handleDragend = (e) => {
         lineCap: 'round',
         lineJoin: 'round',
         listening: !addMode,
+        hitStrokeWidth: lineConfig.line_width < 8 ? 8 : lineConfig.line_width,
       }"
       @click="handleLineClick"
     />
