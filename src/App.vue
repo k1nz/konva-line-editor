@@ -1,9 +1,7 @@
 <template>
   <div class="main">
     <div class="editor-area">
-      <button type="button" @click="handleAnchorAdd">
-        Start to draw a line
-      </button>
+      <button type="button" @click="handleAddLine">Start to draw a line</button>
       <div id="editor"></div>
     </div>
     <div class="stage">
@@ -24,24 +22,24 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import LineLayer from "./components/LineLayer.vue";
+import { onMounted, ref } from 'vue'
+import LineLayer from './components/LineLayer.vue'
 
-const mounted = ref(false);
+const mounted = ref(false)
 onMounted(() => {
-  mounted.value = true;
-});
+  mounted.value = true
+})
 
-const lineLayer = ref(null);
-const handleAnchorAdd = async () => {
-  lineLayer.value?.handleAddLine();
-};
+const lineLayer = ref(null)
+const handleAddLine = async () => {
+  lineLayer.value?.handleAddLine()
+}
 const handleStageClick = (e) => {
-  lineLayer.value?.handleStageClick(e);
-};
+  lineLayer.value?.handleStageClick(e)
+}
 const handleStageMouseMove = (e) => {
-  lineLayer.value?.handleStageMouseMove(e);
-};
+  lineLayer.value?.handleStageMouseMove(e)
+}
 </script>
 
 <style>

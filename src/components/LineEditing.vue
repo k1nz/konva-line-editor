@@ -1,131 +1,130 @@
 <script>
 export default {
-  name: "LineEditing",
-};
+  name: 'LineEditing',
+}
 </script>
 <script setup>
-import { computed, ref, watch } from "vue";
-import Konva from "konva";
-import { DEFAULT_LINE_CONFIG } from "./constants.js";
+import { computed, ref, watch } from 'vue'
+import Konva from 'konva'
+import { DEFAULT_LINE_CONFIG } from './constants.js'
 
 const props = defineProps({
   line: {
     type: Object,
     default: undefined,
   },
-});
-const emit = defineEmits(["complete"]);
+})
+const emit = defineEmits(['complete'])
 
 /** @type Ref<{x: number, y: number}[]> */
-const anchors = ref([]);
-const lineConfig = ref({ ...DEFAULT_LINE_CONFIG });
+const anchors = ref([])
+const lineConfig = ref({ ...DEFAULT_LINE_CONFIG })
 
 watch(
   () => props.line,
   (val) => {
-    if (!val?.points) return;
-    const { points, ...rest } = val;
-    const res = [];
+    if (!val?.points) return
+    const { points, ...rest } = val
+    const res = []
     points.forEach((XOrY, index) => {
       if (index % 2 === 0) {
-        res.push({ x: XOrY });
+        res.push({ x: XOrY })
       } else {
-        res[res.length - 1].y = XOrY;
+        res[res.length - 1].y = XOrY
       }
-    });
-    anchors.value = res;
-    lineConfig.value = rest;
-  }
-);
+    })
+    anchors.value = res
+    lineConfig.value = rest
+  },
+)
 
 const line = computed(() => {
-  return anchors.value.map((anchor) => [anchor.x, anchor.y]).flat();
-});
+  return anchors.value.map((anchor) => [anchor.x, anchor.y]).flat()
+})
 
 const midAnchors = computed(() => {
   return anchors.value
     .map((anchor, idx) => {
-      if (idx === 0) return;
+      if (idx === 0) return
 
-      const prevAnchor = anchors.value[idx - 1];
-      const x = (prevAnchor.x + anchor.x) / 2;
-      const y = (prevAnchor.y + anchor.y) / 2;
-      const prev = prevAnchor;
-      const next = anchor;
-      return { x, y, prev, next };
+      const prevAnchor = anchors.value[idx - 1]
+      const x = (prevAnchor.x + anchor.x) / 2
+      const y = (prevAnchor.y + anchor.y) / 2
+      const prev = prevAnchor
+      const next = anchor
+      return { x, y, prev, next }
     })
-    .slice(1);
-});
+    .slice(1)
+})
 
 const handleAnchorDrag = (e, anchor, index) => {
   // TODO 获取anchor的相对位置，防止跳动
-  anchors.value[index] = e.target.getStage().getRelativePointerPosition();
-};
+  anchors.value[index] = e.target.getStage().getRelativePointerPosition()
+}
 const handleMiddleDragStart = (e, item) => {
-  const idx = anchors.value.findIndex((anchor) => anchor === item.next);
-  anchors.value.splice(idx, 0, item);
-};
+  const idx = anchors.value.findIndex((anchor) => anchor === item.next)
+  anchors.value.splice(idx, 0, item)
+}
 
 // add line
-const addMode = ref(false);
+const addMode = ref(false)
 const setAddMode = (val) => {
-  addMode.value = val;
-};
+  addMode.value = val
+}
 const handleLineAdd = async () => {
-  setAddMode(true);
-  anchors.value.push({ x: 0, y: 0 });
-};
+  setAddMode(true)
+  anchors.value.push({ x: 0, y: 0 })
+}
 const handleStageMouseMove = (e) => {
-  if (!addMode.value || !e.evt) return;
-  const pos = e.target.getStage().getRelativePointerPosition();
-  anchors.value[anchors.value.length - 1] = pos;
-};
+  if (!addMode.value || !e.evt) return
+  const pos = e.target.getStage().getRelativePointerPosition()
+  anchors.value[anchors.value.length - 1] = pos
+}
 const handleStageClick = (e) => {
   if (!addMode.value || !e.evt) {
-    if (e.target instanceof Konva.Stage) completeEdit();
-    return;
+    if (e.target instanceof Konva.Stage) completeEdit()
+    return
   }
-  if (e.target instanceof Konva.Line || e.target instanceof Konva.Circle)
-    return;
+  if (e.target instanceof Konva.Line || e.target instanceof Konva.Circle) return
   // console.log(e.target.getRelativePointerPosition())
-  anchors.value.push(e.target.getStage().getRelativePointerPosition());
-};
+  anchors.value.push(e.target.getStage().getRelativePointerPosition())
+}
 
 /** complete line */
 const getLine = () => {
   return {
     points: line.value,
     ...lineConfig.value,
-  };
-};
+  }
+}
 const completeEdit = () => {
-  emit("complete", getLine());
-  anchors.value = [];
-  lineConfig.value = { ...DEFAULT_LINE_CONFIG };
-  setAddMode(false);
-};
+  emit('complete', getLine())
+  anchors.value = []
+  lineConfig.value = { ...DEFAULT_LINE_CONFIG }
+  setAddMode(false)
+}
 const handleAnchorClick = (e) => {
-  if (!addMode.value) return;
-  setAddMode(false);
-  anchors.value.pop();
-};
+  if (!addMode.value) return
+  setAddMode(false)
+  anchors.value.pop()
+}
 const handleLineClick = (e, index) => {
-  completeEdit();
-};
+  completeEdit()
+}
 
 defineExpose({
   handleStageClick,
   handleStageMouseMove,
   completeEdit,
   handleLineAdd,
-});
+})
 
 const handleMouseover = (e) => {
-  document.body.style.cursor = "pointer";
-};
+  document.body.style.cursor = 'pointer'
+}
 const handleDragend = (e) => {
-  document.body.style.cursor = "default";
-};
+  document.body.style.cursor = 'default'
+}
 </script>
 
 <template>
@@ -177,11 +176,7 @@ const handleDragend = (e) => {
   </v-layer>
   <Teleport to="#editor">
     <t-card title="Line Color" :subtitle="`${lineConfig.line_color}`">
-      <t-color-picker-panel
-        v-model="lineConfig.line_color"
-        format="HEX"
-        :color-modes="['monochrome']"
-      />
+      <t-color-picker-panel v-model="lineConfig.line_color" format="HEX" :color-modes="['monochrome']" />
     </t-card>
     <t-card title="Line Width" :subtitle="`${lineConfig.line_width}`">
       <t-slider v-model="lineConfig.line_width" :min="1" :max="10" />
