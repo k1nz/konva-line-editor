@@ -1,27 +1,32 @@
-<script>
+<script lang="ts">
 export default {
   name: 'LineEditing',
 }
 </script>
-<script setup>
-import { computed, ref, watch } from 'vue'
+<script setup lang="ts">
+import { computed, PropType, ref, watch } from 'vue'
+import { useVModels } from '@vueuse/core'
 import Konva from 'konva'
-import { DEFAULT_LINE_CONFIG } from './constants.js'
+import { DEFAULT_LINE_CONFIG } from './constants'
+import { handleMouseover, handleDragend } from './cursor-style'
+import type { Anchor, Line } from './types'
+import LineEditor from './LineEditor.vue'
 
 const props = defineProps({
-  line: {
-    type: Object,
+  activeLine: {
+    type: Object as PropType<Line>,
     default: undefined,
   },
 })
-const emit = defineEmits(['complete'])
+const emit = defineEmits(['update:line', 'complete'])
 
-/** @type Ref<{x: number, y: number}[]> */
-const anchors = ref([])
+const { activeLine } = useVModels(props, emit)
+
+const anchors = ref<Anchor[]>([])
 const lineConfig = ref({ ...DEFAULT_LINE_CONFIG })
 
 watch(
-  () => props.line,
+  () => activeLine.value,
   (val) => {
     if (!val?.points) return
     const { points, ...rest } = val
@@ -72,6 +77,7 @@ const setAddMode = (val) => {
   addMode.value = val
 }
 const handleLineAdd = async () => {
+  if (addMode.value) return
   setAddMode(true)
   anchors.value.push({ x: 0, y: 0 })
 }
@@ -116,15 +122,7 @@ defineExpose({
   handleStageClick,
   handleStageMouseMove,
   completeEdit,
-  handleLineAdd,
 })
-
-const handleMouseover = (e) => {
-  document.body.style.cursor = 'pointer'
-}
-const handleDragend = (e) => {
-  document.body.style.cursor = 'default'
-}
 </script>
 
 <template>
@@ -174,12 +172,7 @@ const handleDragend = (e) => {
       />
     </template>
   </v-layer>
-  <Teleport to="#editor">
-    <t-card title="Line Color" :subtitle="`${lineConfig.line_color}`">
-      <t-color-picker-panel v-model="lineConfig.line_color" format="HEX" :color-modes="['monochrome']" />
-    </t-card>
-    <t-card title="Line Width" :subtitle="`${lineConfig.line_width}`">
-      <t-slider v-model="lineConfig.line_width" :min="1" :max="10" />
-    </t-card>
-  </Teleport>
+  <LineEditor v-model:addMode="addMode" v-model:lineConfig="lineConfig" />
 </template>
+
+<style lang="less" scoped></style>

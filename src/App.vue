@@ -1,17 +1,11 @@
 <template>
   <div class="main">
-    <div class="editor-area">
-      <button type="button" @click="handleAddLine">Start to draw a line</button>
-      <div id="editor"></div>
-    </div>
-    <div class="stage">
+    <div class="editor-area"></div>
+    <div ref="stageContainer" class="stage">
       <v-stage
-        v-if="mounted"
+        v-if="isMounted"
         ref="stage"
-        :config="{
-          width: 1000,
-          height: 700,
-        }"
+        :config="stageConfig"
         @click="handleStageClick"
         @mousemove="handleStageMouseMove"
       >
@@ -21,19 +15,34 @@
   </div>
 </template>
 
-<script setup>
-import { onMounted, ref } from 'vue'
-import LineLayer from './components/LineLayer.vue'
+<script setup lang="ts">
+import { reactive, ref } from 'vue'
+import {useResizeObserver, useMounted, useDark} from '@vueuse/core'
+import LineLayer from './components/line/LineLayer.vue'
 
-const mounted = ref(false)
-onMounted(() => {
-  mounted.value = true
+const isDark = useDark({
+  selector: 'html',
+  attribute: 'theme-mode',
+  valueDark: 'dark',
+  valueLight: 'light',
+})
+
+const isMounted = useMounted()
+
+const stageContainer = ref(null)
+const stageConfig = reactive({
+  width: 1000,
+  height: 700,
+  draggable: true,
+})
+useResizeObserver(stageContainer, () => {
+  Object.assign(stageConfig, {
+    width: stageContainer.value.clientWidth,
+    height: stageContainer.value.clientHeight,
+  })
 })
 
 const lineLayer = ref(null)
-const handleAddLine = async () => {
-  lineLayer.value?.handleAddLine()
-}
 const handleStageClick = (e) => {
   lineLayer.value?.handleStageClick(e)
 }
@@ -42,7 +51,7 @@ const handleStageMouseMove = (e) => {
 }
 </script>
 
-<style>
+<style lang="less" scoped>
 body {
   margin: 0;
   padding: 0;
@@ -51,15 +60,21 @@ body {
   display: flex;
   flex-direction: row;
   gap: 50px;
-}
-.editor-area {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.stage {
-  display: flex;
-  background: aliceblue;
-  border-radius: 4px;
+  .editor-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /*height: v-bind('`${stageConfig.height}px`');*/
+    height: 70vh;
+  }
+  .stage {
+    /*min-width: v-bind('`${stageConfig.width}px`');*/
+    /*min-height: v-bind('`${stageConfig.height}px`');*/
+    width: 50vw;
+    height: 70vh;
+    display: flex;
+    background: aliceblue;
+    border-radius: 4px;
+  }
 }
 </style>
