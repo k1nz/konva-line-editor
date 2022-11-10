@@ -1,11 +1,8 @@
-<script lang="ts">
-export default {
-  name: 'LineEditor',
-}
-</script>
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core'
-
+defineOptions({
+  name: 'LineEditor',
+})
 const props = defineProps({
   addMode: {
     default: false,

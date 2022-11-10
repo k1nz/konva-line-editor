@@ -1,16 +1,16 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { DEFAULT_LINE_CONFIG } from '../components/line/constants'
-import type { LineData } from '@src/types/shapes'
+import { DEFAULT_LINE_CONFIG } from '../shapes/line/constants'
+import type { Line } from '@src/shapes/line/types'
 
 const useLineStore = defineStore('line', () => {
-  const data: LineData[] = reactive([])
-  const properties = reactive({ ...DEFAULT_LINE_CONFIG })
+  const data: Line[] = reactive([])
+  const props = reactive({ ...DEFAULT_LINE_CONFIG })
 
   const drawLine = () => {}
   const deleteLine = () => {}
 
-  return { data, drawLine, deleteLine }
+  return { data, props, drawLine, deleteLine }
 })
 
 export default useLineStore

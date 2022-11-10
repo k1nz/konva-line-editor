@@ -1,24 +1,14 @@
 <template>
   <div class="main">
     <div class="editor-area"></div>
-    <div ref="stageContainer" class="stage">
-      <v-stage
-        v-if="isMounted"
-        ref="stage"
-        :config="stageConfig"
-        @click="handleStageClick"
-        @mousemove="handleStageMouseMove"
-      >
-        <LineLayer ref="lineLayer" />
-      </v-stage>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import {useResizeObserver, useMounted, useDark} from '@vueuse/core'
-import LineLayer from './components/line/LineLayer.vue'
+import { reactive, ref, VueElement } from 'vue'
+import { useResizeObserver, useMounted, useDark, VueInstance } from '@vueuse/core'
+import LineLayer from './shapes/line/LineLayer.vue'
+import { KonvaPointerEvent } from 'konva/lib/PointerEvents'
 
 const isDark = useDark({
   selector: 'html',
@@ -26,29 +16,6 @@ const isDark = useDark({
   valueDark: 'dark',
   valueLight: 'light',
 })
-
-const isMounted = useMounted()
-
-const stageContainer = ref(null)
-const stageConfig = reactive({
-  width: 1000,
-  height: 700,
-  draggable: true,
-})
-useResizeObserver(stageContainer, () => {
-  Object.assign(stageConfig, {
-    width: stageContainer.value.clientWidth,
-    height: stageContainer.value.clientHeight,
-  })
-})
-
-const lineLayer = ref(null)
-const handleStageClick = (e) => {
-  lineLayer.value?.handleStageClick(e)
-}
-const handleStageMouseMove = (e) => {
-  lineLayer.value?.handleStageMouseMove(e)
-}
 </script>
 
 <style lang="less" scoped>

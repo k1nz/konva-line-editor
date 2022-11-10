@@ -1,33 +1,29 @@
-<script lang="ts">
-export default {
-  name: 'LineLayer',
-}
-</script>
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Line } from './types'
 import { DEFAULT_LINE } from './constants'
-
+import { handleMouseover, handleDragend } from './cursor-style'
 import LineEditing from './LineEditing.vue'
+import type { Line } from './types'
+import type { KonvaPointerEvent } from 'konva/lib/PointerEvents'
 
 const lines = ref<Line[]>(DEFAULT_LINE)
 
-const editingLineRef = ref(null)
+const editingLineRef = ref<TemplateRef<typeof LineEditing>>(null)
 const activeLine = ref<Line>()
 
-const handleStageMouseMove = (e) => {
+const handleStageMouseMove = (e: KonvaPointerEvent) => {
   editingLineRef.value?.handleStageMouseMove(e)
 }
-const handleStageClick = (e) => {
+const handleStageClick = (e: KonvaPointerEvent) => {
   editingLineRef.value?.handleStageClick(e)
 }
 
-const handleLineEditComplete = (line) => {
+const handleLineEditComplete = (line: Line) => {
   lines.value.push(line)
   activeLine.value = undefined
 }
 
-const handleLineClick = (e, index) => {
+const handleLineClick = (e: KonvaPointerEvent, index: number) => {
   if (activeLine.value) editingLineRef.value?.completeEdit()
   activeLine.value = lines.value.splice(index, 1)[0]
 }
@@ -36,8 +32,8 @@ defineExpose({ handleStageMouseMove, handleStageClick })
 </script>
 
 <template>
-  <v-layer ref="layer" @mouseover="handleMouseover" @mouseout="handleDragend">
-    <v-line
+  <VLayer ref="layer" @mouseover="handleMouseover" @mouseout="handleDragend">
+    <VLine
       v-for="(line, index) in lines"
       :key="`line-${index}`"
       :config="{
@@ -50,7 +46,7 @@ defineExpose({ handleStageMouseMove, handleStageClick })
       }"
       @click="handleLineClick($event, index)"
     />
-  </v-layer>
+  </VLayer>
   <!--编辑单独放置一个图层，减少大量图形频繁重绘带来的性能损耗-->
   <LineEditing ref="editingLineRef" v-model:line="activeLine" @complete="handleLineEditComplete" />
 </template>

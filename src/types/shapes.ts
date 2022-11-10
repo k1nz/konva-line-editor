@@ -1,3 +1,5 @@
+import { Line } from '@src/shapes/line/types'
+
 export type ShapeName =
   | 'Rect'
   | 'Circle'
@@ -14,18 +16,12 @@ export type ShapeName =
   | 'Arrow'
   | 'Custom'
 
-export interface LineData {
-  points: number[]
-  line_width: number
-  line_color: string
-}
+export type ShapesDataUnion = Line
 
-export type ShapesDataUnion = LineData
-
-export type StageData = Record<Uncapitalize<ShapeName>, ShapesDataUnion[]>
+export type StageData = Partial<Record<Uncapitalize<ShapeName>, ShapesDataUnion[]>>
 
 // TODO
 export interface SelectedShape {
-  type: ShapeName
-  data: ShapesDataUnion
+  type: ShapeName | null
+  data?: ShapesDataUnion
 }
