@@ -6,7 +6,7 @@ export const DEFAULT_LINE_CONFIG: Line = {
   line_color: '#666',
 }
 
-export const DEFAULT_LINE: Line[] = [
+export const DEMO_LINES: Line[] = [
   {
     points: [100, 100, 200, 100, 200, 200, 100, 200],
     line_width: 8,

@@ -18,10 +18,10 @@ export type ShapeName =
 
 export type ShapesDataUnion = Line
 
-export type StageData = Partial<Record<Uncapitalize<ShapeName>, ShapesDataUnion[]>>
+export type StageData = Record<Uncapitalize<ShapeName>, ShapesDataUnion[]>
 
 // TODO
 export interface SelectedShape {
-  type: ShapeName | null
-  data?: ShapesDataUnion
+  type: Uncapitalize<ShapeName> | null
+  data: ShapesDataUnion | null
 }

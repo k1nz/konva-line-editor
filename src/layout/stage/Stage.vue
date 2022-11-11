@@ -28,7 +28,7 @@ const handleStageMouseMove = (e: KonvaPointerEvent) => {
 
 <template>
   <div ref="stageWrapperRef" class="stage">
-    <VStage
+    <v-stage
       v-if="isMounted"
       ref="stage"
       :config="stageConfig"
@@ -36,7 +36,7 @@ const handleStageMouseMove = (e: KonvaPointerEvent) => {
       @mousemove="handleStageMouseMove"
     >
       <LineLayer ref="lineLayerRef" />
-    </VStage>
+    </v-stage>
   </div>
 </template>
 

@@ -6,7 +6,7 @@ import VueKonva from 'vue-konva'
 import TDesign from 'tdesign-vue-next'
 import './assets/theme.css'
 
-import TooltipButton from '@src/components/tooltip-button'
+import TooltipButton from './components/tooltip-button/index.vue'
 
 const pinia = createPinia()
 

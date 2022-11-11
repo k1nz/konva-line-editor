@@ -1,6 +1,7 @@
 <template>
   <div class="main">
     <div class="editor-area"></div>
+    <Stage />
   </div>
 </template>
 
@@ -9,6 +10,7 @@ import { reactive, ref, VueElement } from 'vue'
 import { useResizeObserver, useMounted, useDark, VueInstance } from '@vueuse/core'
 import LineLayer from './shapes/line/LineLayer.vue'
 import { KonvaPointerEvent } from 'konva/lib/PointerEvents'
+import Stage from '@src/layout/stage/Stage.vue'
 
 const isDark = useDark({
   selector: 'html',
